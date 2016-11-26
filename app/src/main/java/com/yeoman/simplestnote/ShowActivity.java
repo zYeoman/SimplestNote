@@ -20,7 +20,7 @@ public class ShowActivity extends AppCompatActivity {
         final ListView list = (ListView) findViewById(R.id.list);
         final SimplestNoteDbHelper mDbHelper = new SimplestNoteDbHelper(this);
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME;
+        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME + " ORDER BY " + FeedEntry._ID + " DESC;";
         Cursor cursor = db.rawQuery(selectQuery, null);
         list.setAdapter(new SimpleCursorAdapter(
                 this,
