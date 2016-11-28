@@ -32,8 +32,14 @@ public class ShowActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                db.delete(FeedEntry.TABLE_NAME,null,null);
                 finish();
+            }
+        });
+        fab.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                db.delete(FeedEntry.TABLE_NAME,null,null);
+                return true;
             }
         });
     }
