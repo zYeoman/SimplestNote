@@ -39,6 +39,7 @@ public class ShowActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view){
                 db.delete(FeedEntry.TABLE_NAME,null,null);
+                finish();
                 return true;
             }
         });

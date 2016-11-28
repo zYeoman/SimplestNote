@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText input = (EditText) findViewById(R.id.input);
         final TextView show = (TextView) findViewById(R.id.show);
         show.setText("");
+        input.setHorizontallyScrolling(false);
+        input.setMaxLines(Integer.MAX_VALUE);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
