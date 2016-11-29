@@ -2,23 +2,15 @@ package com.yeoman.simplestnote;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import com.telly.floatingaction.FloatingAction;
+import com.melnykov.fab.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ShowActivity extends AppCompatActivity implements View.OnClickListener{
-    private FloatingAction mFloatingAction;
+public class ShowActivity extends AppCompatActivity{
     private SQLiteDatabase mdb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +27,9 @@ public class ShowActivity extends AppCompatActivity implements View.OnClickListe
                 cursor,
                 new String[]{FeedEntry.COLUMN_NAME_TITLE, FeedEntry.COLUMN_NAME_SUBTITLE},
                 new int[]{android.R.id.text1,android.R.id.text2}));
-        mFloatingAction = FloatingAction.from(this)
-                .listenTo(list)
-                .colorResId(R.color.colorAccent)
-                .icon(android.R.drawable.ic_delete)
-                .listener(this)
-                .build();
-        ImageButton btn = (ImageButton) findViewById(R.id.fa_action_view);
-        btn.setOnLongClickListener(new View.OnLongClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToListView(list);
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 mdb.delete(FeedEntry.TABLE_NAME,null,null);
@@ -50,16 +37,11 @@ public class ShowActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
-    }
-
-    @Override
-    public void onClick(View v){
-        finish();
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        mFloatingAction.onDestroy();
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }

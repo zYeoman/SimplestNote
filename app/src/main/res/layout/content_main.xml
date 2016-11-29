@@ -28,7 +28,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:layout_gravity="right|bottom"
-        android:background="@drawable/fa_default_background"
         app:backgroundTint="@android:color/white"
         android:tint="@android:color/black" />
 
