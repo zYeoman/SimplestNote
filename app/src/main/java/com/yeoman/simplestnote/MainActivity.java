@@ -19,32 +19,28 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EditText input;
+    private TextView show;
+    private SimplestNoteDbHelper mDbHelper;
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd HH:mm:ss");
-        final SimplestNoteDbHelper mDbHelper = new SimplestNoteDbHelper(this);
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final EditText input = (EditText) findViewById(R.id.input);
-        final TextView show = (TextView) findViewById(R.id.show);
+        mDbHelper = new SimplestNoteDbHelper(this);
+        db = mDbHelper.getWritableDatabase();
+        input = (EditText) findViewById(R.id.input);
+        show = (TextView) findViewById(R.id.show);
         show.setText("");
         input.setHorizontallyScrolling(false);
         input.setMaxLines(Integer.MAX_VALUE);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                String strInput = input.getText().toString();
-                String strShow = show.getText().toString();
-                strShow = strInput + "\n" + strShow;
-                show.setText(strShow);
-                ContentValues mValues = new ContentValues();
-                mValues.put(FeedEntry.COLUMN_NAME_TITLE, strInput);
-                mValues.put(FeedEntry.COLUMN_NAME_SUBTITLE, dateFormatter.format(new Date()));
-                db.insert(FeedEntry.TABLE_NAME, null, mValues);
-                input.setText("");
+                saveNote();
                 return false;
             }
         });
@@ -53,10 +49,34 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                saveNote();
                 Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
                 startActivity(mIntent);
             }
         });
+        fab.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                saveNote();
+                finish();
+                return true;
+            }
+        });
+
+    }
+
+    protected void saveNote(){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+        String strInput = input.getText().toString();
+        if (strInput.equals("")) return;
+        String strShow = show.getText().toString();
+        strShow = strInput + "\n" + strShow;
+        show.setText(strShow);
+        ContentValues mValues = new ContentValues();
+        mValues.put(FeedEntry.COLUMN_NAME_TITLE, strInput);
+        mValues.put(FeedEntry.COLUMN_NAME_SUBTITLE, dateFormatter.format(new Date()));
+        db.insert(FeedEntry.TABLE_NAME, null, mValues);
+        input.setText("");
     }
 
     @Override
