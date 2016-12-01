@@ -50,18 +50,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveNote();
-                Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
-                startActivity(mIntent);
+                finish();
             }
         });
         fab.setOnLongClickListener(new View.OnLongClickListener(){
             @Override
             public boolean onLongClick(View view){
                 saveNote();
-                finish();
+                Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
+                startActivity(mIntent);
                 return true;
             }
         });
+        Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
+        startActivity(mIntent);
 
     }
 
