@@ -8,10 +8,6 @@ public class SimplestNoteDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "SimplestNote.db";
-    ;
-
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
 
     public SimplestNoteDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
