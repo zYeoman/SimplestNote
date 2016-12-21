@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                saveNote();
+                saveNote(input.getText().toString());
                 return false;
             }
         });
@@ -49,27 +49,37 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveNote();
+                saveNote(input.getText().toString());
                 finish();
             }
         });
         fab.setOnLongClickListener(new View.OnLongClickListener(){
             @Override
             public boolean onLongClick(View view){
-                saveNote();
+                saveNote(input.getText().toString());
                 Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
                 startActivity(mIntent);
                 return true;
             }
         });
-        Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
-        startActivity(mIntent);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                saveNote(intent.getStringExtra(intent.EXTRA_TEXT)); // Handle text being sent
+            }
+            finish();
+        } else {
+            Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
+            startActivity(mIntent);
+        }
 
     }
 
-    protected void saveNote(){
+    protected void saveNote(String strInput){
         SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd HH:mm:ss");
-        String strInput = input.getText().toString();
         if (strInput.equals("")) return;
         String strShow = show.getText().toString();
         strShow = strInput + "\n" + strShow;
