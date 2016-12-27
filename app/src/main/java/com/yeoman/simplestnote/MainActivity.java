@@ -37,6 +37,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mDbHelper = new SimplestNoteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                saveNote(intent.getStringExtra(intent.EXTRA_TEXT)); // Handle text being sent
+            }
+            finish();
+        } else {
+            refreshList();
+        }
         list = (ListView) findViewById(R.id.list);
         input = (EditText) findViewById(R.id.input);
         input.setHorizontallyScrolling(false);
@@ -67,18 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if ("text/plain".equals(type)) {
-                saveNote(intent.getStringExtra(intent.EXTRA_TEXT)); // Handle text being sent
-            }
-            finish();
-        } else {
-            refreshList();
-        }
 
     }
 
