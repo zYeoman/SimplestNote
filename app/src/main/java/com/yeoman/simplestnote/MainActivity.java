@@ -2,9 +2,9 @@ package com.yeoman.simplestnote;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -12,7 +12,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView show;
     private SimplestNoteDbHelper mDbHelper;
     private SQLiteDatabase db;
+    private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +37,34 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mDbHelper = new SimplestNoteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
+        list = (ListView) findViewById(R.id.list);
         input = (EditText) findViewById(R.id.input);
-        show = (TextView) findViewById(R.id.show);
-        show.setText("");
         input.setHorizontallyScrolling(false);
         input.setMaxLines(Integer.MAX_VALUE);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 saveNote(input.getText().toString());
+                refreshList();
                 return false;
             }
         });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToListView(list);
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                db.delete(FeedEntry.TABLE_NAME,null,null);
+                finish();
+                return true;
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveNote(input.getText().toString());
                 finish();
-            }
-        });
-        fab.setOnLongClickListener(new View.OnLongClickListener(){
-            @Override
-            public boolean onLongClick(View view){
-                saveNote(input.getText().toString());
-                Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
-                startActivity(mIntent);
-                return true;
             }
         });
         Intent intent = getIntent();
@@ -72,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
             finish();
         } else {
-            Intent mIntent = new Intent(MainActivity.this, ShowActivity.class);
-            startActivity(mIntent);
+            refreshList();
         }
 
     }
@@ -81,14 +85,23 @@ public class MainActivity extends AppCompatActivity {
     protected void saveNote(String strInput){
         SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd HH:mm:ss");
         if (strInput.equals("")) return;
-        String strShow = show.getText().toString();
-        strShow = strInput + "\n" + strShow;
-        show.setText(strShow);
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.COLUMN_NAME_TITLE, strInput);
         mValues.put(FeedEntry.COLUMN_NAME_SUBTITLE, dateFormatter.format(new Date()));
         db.insert(FeedEntry.TABLE_NAME, null, mValues);
         input.setText("");
+    }
+
+    protected void refreshList(){
+
+        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME + " ORDER BY " + FeedEntry._ID + " DESC;";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        list.setAdapter(new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_2,
+                cursor,
+                new String[]{FeedEntry.COLUMN_NAME_TITLE, FeedEntry.COLUMN_NAME_SUBTITLE},
+                new int[]{android.R.id.text1,android.R.id.text2}));
     }
 
     @Override

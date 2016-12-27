@@ -13,24 +13,6 @@
     tools:context="com.yeoman.simplestnote.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <android.support.design.widget.FloatingActionButton
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="19dp"
-        android:id="@+id/fab"
-        android:orientation="vertical"
-        android:layout_width="73dp"
-        android:layout_height="73dp"
-        android:scaleType="fitCenter"
-        android:padding="25dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_gravity="right|bottom"
-        app:backgroundTint="@android:color/white"
-        android:tint="@android:color/black" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -54,13 +36,28 @@
                 android:fontFamily="sans-serif" />
 
         </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:text="TextView"
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/show"
-            android:layout_weight="1" />
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"/>
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:src="@android:drawable/ic_delete"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="@android:color/darker_gray"
+                fab:fab_colorRipple="@color/colorAccent" />
+        </FrameLayout>
 
     </LinearLayout>
 
