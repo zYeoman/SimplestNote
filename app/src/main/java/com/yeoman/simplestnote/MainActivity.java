@@ -23,11 +23,11 @@ import com.melnykov.fab.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.content.Intent.EXTRA_TEXT;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText input;
-    private TextView show;
-    private SimplestNoteDbHelper mDbHelper;
     private SQLiteDatabase db;
     private ListView list;
 
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mDbHelper = new SimplestNoteDbHelper(this);
+        SimplestNoteDbHelper mDbHelper = new SimplestNoteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
         list = (ListView) findViewById(R.id.list);
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
-                saveNote(intent.getStringExtra(intent.EXTRA_TEXT)); // Handle text being sent
+                saveNote(intent.getStringExtra(EXTRA_TEXT)); // Handle text being sent
             }
             finish();
         } else {
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void saveNote(String strInput){
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat));
         if (strInput.equals("")) return;
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.COLUMN_NAME_TITLE, strInput);
