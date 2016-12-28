@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mDbHelper = new SimplestNoteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
+        list = (ListView) findViewById(R.id.list);
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             refreshList();
         }
-        list = (ListView) findViewById(R.id.list);
         input = (EditText) findViewById(R.id.input);
         input.setHorizontallyScrolling(false);
         input.setMaxLines(Integer.MAX_VALUE);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 saveNote(input.getText().toString());
                 refreshList();
-                return false;
+                return true;
             }
         });
 
