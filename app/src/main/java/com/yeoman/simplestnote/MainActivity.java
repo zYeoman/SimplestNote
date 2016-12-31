@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
             }
 
-        }, 200);
+        }, 400);
     }
 
     @Override
