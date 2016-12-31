@@ -26,18 +26,18 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
 
-            <EditText
+            <com.yeoman.simplestnote.KeyBackEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Input"
+                android:hint="@string/input"
                 android:singleLine="true"
                 android:id="@+id/input"
                 android:imeOptions="actionNext"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -47,16 +47,6 @@
                 android:layout_height="match_parent"
                 android:scrollbars="none"/>
 
-            <com.melnykov.fab.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="16dp"
-                android:src="@android:drawable/ic_delete"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="@android:color/darker_gray"
-                fab:fab_colorRipple="@color/colorAccent" />
         </FrameLayout>
 
     </LinearLayout>

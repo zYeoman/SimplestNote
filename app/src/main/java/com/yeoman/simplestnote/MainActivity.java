@@ -1,6 +1,7 @@
 package com.yeoman.simplestnote;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,24 +11,23 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.content.Intent.EXTRA_TEXT;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText input;
+    private KeyBackEditText input;
     private SQLiteDatabase db;
     private ListView list;
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             refreshList();
         }
-        input = (EditText) findViewById(R.id.input);
+        input = (KeyBackEditText) findViewById(R.id.input);
         input.setHorizontallyScrolling(false);
         input.setMaxLines(Integer.MAX_VALUE);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -65,23 +65,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToListView(list);
-        fab.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                dialog();
-                return true;
-            }
-        });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveNote(input.getText().toString());
-                finish();
-            }
-        });
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
 
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+            }
+
+        }, 200);
+    }
+
+    @Override
+    public void onBackPressed(){
+        saveNote(input.getText().toString());
+        super.onBackPressed();
     }
 
     protected void saveNote(String strInput){
@@ -140,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.delete) {
+            dialog();
             return true;
         }
 
