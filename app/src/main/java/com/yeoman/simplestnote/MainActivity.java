@@ -65,16 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//
-//            @Override
-//            public void run() {
-//                InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-//            }
-//
-//        }, 400);
     }
 
     @Override
@@ -105,23 +95,49 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{android.R.id.text1,android.R.id.text2}));
     }
 
-    protected void dialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete all?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                db.delete(FeedEntry.TABLE_NAME,null,null);
-                finish();
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    protected void dialogDelete(){
+        new AlertDialog.Builder(this)
+                .setTitle("Delete all?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        db.delete(FeedEntry.TABLE_NAME,null,null);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setNeutralButton("And share", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME + " ORDER BY " + FeedEntry._ID + " DESC;";
+                        Cursor cursor = db.rawQuery(selectQuery, null);
+                        String str = "SimplestNote\n";
+                        cursor.moveToFirst();
+                        while (!cursor.isAfterLast()){
+                            String content = cursor.getString(1);
+                            String time = cursor.getString(2);
+                            str += content + " at " + time + "\n";
+                            cursor.moveToNext();
+                        }
+                        shareText(str);
+                        db.delete(FeedEntry.TABLE_NAME,null,null);
+                        finish();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    protected void shareText(String str){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, str);
+        intent.setType("text/plain");
+        startActivity(intent);
     }
 
     @Override
@@ -157,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
-            dialog();
+            dialogDelete();
             return true;
         }
 
