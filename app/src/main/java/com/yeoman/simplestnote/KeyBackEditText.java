@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.EditText;
 
-public class KeyBackEditText extends EditText {
+import com.optimus.edittextfield.EditTextField;
+
+public class KeyBackEditText extends EditTextField {
     public KeyBackEditText(Context context) {
         super(context);
     }
@@ -26,4 +27,6 @@ public class KeyBackEditText extends EditText {
         }
         return super.dispatchKeyEventPreIme(event);
     }
+
+
 }
