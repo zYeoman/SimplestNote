@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -89,21 +90,21 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat));
         if (strInput.equals("")) return;
         ContentValues mValues = new ContentValues();
-        mValues.put(FeedEntry.COLUMN_NAME_TITLE, strInput);
-        mValues.put(FeedEntry.COLUMN_NAME_SUBTITLE, dateFormatter.format(new Date()));
+        mValues.put(FeedEntry.CONTENT, strInput);
+        mValues.put(FeedEntry.TIME, dateFormatter.format(new Date()));
+        mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
         db.insert(FeedEntry.TABLE_NAME, null, mValues);
         input.setText("");
     }
 
     protected void refreshList(){
 
-        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME + " ORDER BY " + FeedEntry._ID + " DESC;";
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         list.setAdapter(new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_2,
                 cursor,
-                new String[]{FeedEntry.COLUMN_NAME_TITLE, FeedEntry.COLUMN_NAME_SUBTITLE},
+                new String[]{FeedEntry.CONTENT, FeedEntry.TIME},
                 new int[]{android.R.id.text1,android.R.id.text2}));
     }
 
@@ -113,8 +114,12 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        db.delete(FeedEntry.TABLE_NAME,null,null);
-                        finish();
+                        ContentValues mValues = new ContentValues();
+                        mValues.put(FeedEntry.FLAG, FeedEntry.Del);
+                        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
+                        refreshList();
+                        undoSnack();
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -125,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNeutralButton("And share", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String selectQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME + " ORDER BY " + FeedEntry._ID + " DESC;";
-                        Cursor cursor = db.rawQuery(selectQuery, null);
+                        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
                         String str = "SimplestNote\n";
                         cursor.moveToFirst();
                         while (!cursor.isAfterLast()){
@@ -135,12 +139,36 @@ public class MainActivity extends AppCompatActivity {
                             str += content + " at " + time + "\n";
                             cursor.moveToNext();
                         }
+                        cursor.close();
                         shareText(str);
                         db.delete(FeedEntry.TABLE_NAME,null,null);
                         finish();
                     }
                 })
                 .create()
+                .show();
+    }
+
+    protected void undoSnack(){
+        Snackbar.make(list, "All entry deleted!", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ContentValues mValues = new ContentValues();
+                        mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
+                        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
+                        refreshList();
+                    }
+                })
+                .addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event){
+                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                            finish();
+                        else
+                            db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                    }
+                })
                 .show();
     }
 
