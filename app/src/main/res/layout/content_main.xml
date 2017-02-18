@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
@@ -13,54 +14,72 @@
     tools:context="com.yeoman.simplestnote.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-        <android.support.design.widget.TextInputLayout
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
 
-            <com.yeoman.simplestnote.KeyBackEditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/input"
-                android:singleLine="true"
-                android:id="@+id/input"
-                android:imeOptions="actionNext"
-                android:fontFamily="sans-serif"
-                android:inputType="text"
-                app:clearButtonMode="whileEditing"/>
+                android:layout_height="wrap_content">
 
-        </android.support.design.widget.TextInputLayout>
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:fab="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                <com.yeoman.simplestnote.KeyBackEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/input"
+                    android:singleLine="true"
+                    android:id="@+id/input"
+                    android:imeOptions="actionNext"
+                    android:fontFamily="sans-serif"
+                    android:inputType="text"
+                    app:clearButtonMode="whileEditing"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <ListView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="none"/>
+        </LinearLayout>
 
-            <com.melnykov.fab.FloatingActionButton
-                            android:id="@+id/fab"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|right"
-                            android:layout_margin="16dp"
-                            android:src="@android:drawable/ic_delete"
-                            fab:fab_colorNormal="@android:color/white"
-                            fab:fab_colorPressed="@android:color/darker_gray"
-                            fab:fab_colorRipple="@color/colorAccent" />
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fam"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            >
 
-        </FrameLayout>
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/share_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_share"
+                android:tint="@color/colorPrimary"
+                fab:fab_size="mini"
+                fab:fab_label="Share And Delete"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="@android:color/darker_gray"/>
 
-    </LinearLayout>
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_delete"
+                fab:fab_size="mini"
+                fab:fab_label="Delete"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="@android:color/darker_gray"/>
+
+        </com.github.clans.fab.FloatingActionMenu>
+
+    </FrameLayout>
 
 </RelativeLayout>

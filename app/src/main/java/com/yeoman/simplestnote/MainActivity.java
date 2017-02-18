@@ -16,11 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private KeyBackEditText input;
     private SQLiteDatabase db;
     private ListView list;
+    private int mPreviousVisibleItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,38 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToListView(list);
+        FloatingActionButton share_fab = (FloatingActionButton) findViewById(R.id.share_fab);
+        final FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fam);
+
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem > mPreviousVisibleItem) {
+                    fam.hideMenuButton(true);
+                } else if (firstVisibleItem < mPreviousVisibleItem) {
+                    fam.showMenuButton(true);
+                }
+                mPreviousVisibleItem = firstVisibleItem;
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogDelete();
+                restorableDelete();
+            }
+        });
+
+        share_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareText();
+                restorableDelete();
             }
         });
     }
@@ -108,18 +138,21 @@ public class MainActivity extends AppCompatActivity {
                 0));
     }
 
+    protected void restorableDelete(){
+        ContentValues mValues = new ContentValues();
+        mValues.put(FeedEntry.FLAG, FeedEntry.Del);
+        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
+        refreshList();
+        undoSnack();
+    }
+
     protected void dialogDelete(){
         new AlertDialog.Builder(this)
                 .setTitle("Delete all?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ContentValues mValues = new ContentValues();
-                        mValues.put(FeedEntry.FLAG, FeedEntry.Del);
-                        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
-                        refreshList();
-                        undoSnack();
-
+                        restorableDelete();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -130,19 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 .setNeutralButton("And share", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
-                        String str = "SimplestNote\n";
-                        cursor.moveToFirst();
-                        while (!cursor.isAfterLast()){
-                            String content = cursor.getString(1);
-                            String time = cursor.getString(2);
-                            str += content + " at " + time + "\n";
-                            cursor.moveToNext();
-                        }
-                        cursor.close();
-                        shareText(str);
-                        db.delete(FeedEntry.TABLE_NAME,null,null);
-                        finish();
+                        shareText();
+                        restorableDelete();
                     }
                 })
                 .create()
@@ -172,7 +194,17 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    protected void shareText(String str){
+    protected void shareText(){
+        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+        String str = "SimplestNote\n";
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            String content = cursor.getString(1);
+            String time = cursor.getString(2);
+            str += content + " at " + time + "\n";
+            cursor.moveToNext();
+        }
+        cursor.close();
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, str);

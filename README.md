@@ -8,6 +8,8 @@ The simplest note app on android, with only 3 features: add note, show all notes
     * Add, Show, Delete and Share
 * V1.1
     * Undo
+* V1.2
+    * FloatingMenu
 
 ## TODO
 * Code review
