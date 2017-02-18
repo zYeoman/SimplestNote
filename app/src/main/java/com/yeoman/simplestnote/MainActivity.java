@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             refreshList();
         }
+
         input = (KeyBackEditText) findViewById(R.id.input);
         input.setHorizontallyScrolling(false);
         input.setMaxLines(Integer.MAX_VALUE);
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 dialogDelete();
             }
         });
-
     }
 
     @Override
@@ -98,14 +98,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void refreshList(){
-
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         list.setAdapter(new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_2,
                 cursor,
                 new String[]{FeedEntry.CONTENT, FeedEntry.TIME},
-                new int[]{android.R.id.text1,android.R.id.text2}));
+                new int[]{android.R.id.text1,android.R.id.text2},
+                0));
     }
 
     protected void dialogDelete(){
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+                    imm.showSoftInput(input, InputMethodManager.SHOW_FORCED);
                 }
 
             }, 100);
