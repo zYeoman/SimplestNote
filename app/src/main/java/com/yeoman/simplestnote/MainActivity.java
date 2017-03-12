@@ -185,9 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event){
-                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
-                            finish();
-                        else
+                        if (event == Snackbar.Callback.DISMISS_EVENT_ACTION)
                             db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
                     }
                 })
