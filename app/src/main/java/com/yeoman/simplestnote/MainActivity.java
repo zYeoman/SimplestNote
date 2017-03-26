@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                        db.delete(FeedEntry.TABLE_NAME,FeedEntry.toDel,null);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void sendText(){
-        AVOSCloud.initialize(this,"xYnmPhrQu3YUQ28Ywk2qEfIp-gzGzoHsz","ijsCplpAyUiEzXD36KkOFwHU");
+        AVOSCloud.initialize(this,"8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz","XBGC5iyLjyNouI1L4skVJB1O");
         AVObject note = new AVObject("Note");
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         String str = "";
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 if (e == null) {
                     // 保存成功
                     // 删除原来数据
-                    db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                    db.delete(FeedEntry.TABLE_NAME,FeedEntry.toDel,null);
                 }
                 else {
                     // 保存失败
