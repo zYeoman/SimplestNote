@@ -21,6 +21,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.SaveCallback;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton delete_fab = (FloatingActionButton) findViewById(R.id.delete_fab);
         FloatingActionButton share_fab = (FloatingActionButton) findViewById(R.id.share_fab);
         final FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fam);
 
@@ -94,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        delete_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 restorableDelete();
@@ -186,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event){
                         if (event == Snackbar.Callback.DISMISS_EVENT_ACTION)
-                            db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                            sendText();
                     }
                 })
                 .show();
@@ -208,6 +212,55 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_TEXT, str);
         intent.setType("text/plain");
         startActivity(intent);
+    }
+
+    protected void deleteAsk(){
+        new AlertDialog.Builder(this)
+                .setTitle("Save failure, delete anyway?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    protected void sendText(){
+        AVOSCloud.initialize(this,"xYnmPhrQu3YUQ28Ywk2qEfIp-gzGzoHsz","ijsCplpAyUiEzXD36KkOFwHU");
+        AVObject note = new AVObject("Note");
+        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+        String str = "";
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            String content = cursor.getString(1);
+            String time = cursor.getString(2);
+            str += content + " at " + time + "\n";
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        note.put("content", str);
+        note.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    // 保存成功
+                    // 删除原来数据
+                    db.delete(FeedEntry.TABLE_NAME,FeedEntry.FLAG + "=" + FeedEntry.Del,null);
+                }
+                else {
+                    // 保存失败
+                    deleteAsk();
+                }
+            }
+        });
     }
 
     @Override
