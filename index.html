@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <p id="content"></p>
+    <div id="content"></div>
     <script
     src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -25,14 +25,22 @@
     <script charset="utf-8">
     var APP_ID = '8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz';
     var APP_KEY = 'XBGC5iyLjyNouI1L4skVJB1O';
-    AV.init({
-      appId: APP_ID,
-      appKey: APP_KEY
+    AV.init({ appId: APP_ID, appKey: APP_KEY });
+    var query = new AV.Query('Note');
+    query.exists('content')
+    query.find().then(function (results){
+        var to2d = function(t) {return ('0'+t).slice(-2);}
+        var content = '<table>';
+        results.forEach(function (e){
+            c = e.createdAt;
+            content += '<tr><td>'+e.get('content').replace(/\n/g,"<br>")+'</td><td>';
+            content += [c.getYear()+1900,to2d(c.getMonth()+1),to2d(c.getDate())].join('-')+' '+[to2d(c.getHours()),to2d(c.getMinutes()),to2d(c.getSeconds())].join(':')+'</td></tr>';
+        });
+        content += '</table>';
+        $('#content').append(content);
+    }, function(error){
+        alert('Error');
     });
-    objects = [];
-    AV.Object.fetchAll(objects).then(function (objects){
-    });
-
     </script>
 </body>
 </html>
