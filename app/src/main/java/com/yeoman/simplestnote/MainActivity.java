@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         delete_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fam.close(true);
                 restorableDelete();
             }
         });
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         share_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fam.close(true);
                 shareText();
                 restorableDelete();
             }
