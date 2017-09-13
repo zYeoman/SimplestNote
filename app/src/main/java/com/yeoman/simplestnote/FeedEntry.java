@@ -13,4 +13,7 @@ public  class FeedEntry implements BaseColumns {
     public static final String SelectALL="SELECT  * FROM " + TABLE_NAME +
             " WHERE " + FLAG + " =0" +
             " ORDER BY " + _ID + " DESC;";
+    public static final String SelectDel="SELECT  * FROM " + TABLE_NAME +
+            " WHERE " + FLAG + " =1" +
+            " ORDER BY " + _ID + " DESC;";
 }

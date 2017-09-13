@@ -189,13 +189,6 @@ public class MainActivity extends AppCompatActivity {
                         refreshList();
                     }
                 })
-                .addCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event){
-                        if (event == Snackbar.Callback.DISMISS_EVENT_ACTION)
-                            sendText();
-                    }
-                })
                 .show();
     }
 
@@ -238,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     protected void sendText(){
         AVOSCloud.initialize(this,"8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz","XBGC5iyLjyNouI1L4skVJB1O");
         AVObject note = new AVObject("Note");
-        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+        Cursor cursor = db.rawQuery(FeedEntry.SelectDel, null);
         String str = "";
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
