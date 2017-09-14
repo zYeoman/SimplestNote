@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
 
+        if(str.trim().length() <= 0)return;
         note.put("content", str);
         note.saveInBackground(new SaveCallback() {
             @Override
