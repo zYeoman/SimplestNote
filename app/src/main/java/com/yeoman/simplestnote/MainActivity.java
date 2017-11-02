@@ -118,9 +118,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onPause(){
         saveNote(input.getText().toString());
-        super.onBackPressed();
+        InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        super.onPause();
     }
 
     protected void saveNote(String strInput){
