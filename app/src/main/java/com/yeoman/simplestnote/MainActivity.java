@@ -146,23 +146,23 @@ public class MainActivity extends AppCompatActivity {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.show_all_note);
         ComponentName thisWidget = new ComponentName(context, ShowAllNote.class);
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
-        String content;
         // Instruct the widget manager to update the widget
+        String content1="",content2="",content3="";
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
-            content = cursor.getString(1);
-            views.setTextViewText(R.id.textView1, content);
+            content1 = cursor.getString(1);
             cursor.moveToNext();
             if (!cursor.isAfterLast()) {
-                content = cursor.getString(1);
-                views.setTextViewText(R.id.textView2, content);
+                content2 = cursor.getString(1);
                 cursor.moveToNext();
                 if (!cursor.isAfterLast()) {
-                    content = cursor.getString(1);
-                    views.setTextViewText(R.id.textView3, content);
+                    content3 = cursor.getString(1);
                 }
             }
         }
+        views.setTextViewText(R.id.textView1, content1);
+        views.setTextViewText(R.id.textView2, content2);
+        views.setTextViewText(R.id.textView3, content3);
         cursor.close();
         appWidgetManager.updateAppWidget(thisWidget, views);
     }
