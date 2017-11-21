@@ -1,8 +1,10 @@
 package com.yeoman.simplestnote;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.RemoteViews;
@@ -47,6 +49,13 @@ public class ShowAllNote extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.show_all_note);
+            Intent configIntent = new Intent(context, MainActivity.class);
+
+            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+
+            remoteViews.setOnClickPendingIntent(R.id.widget_layout, configPendingIntent);
+            appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
         }
     }
 
