@@ -295,7 +295,12 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
-            dialogDelete();
+            Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+            if(cursor.moveToFirst()) {
+                String rowId = cursor.getString(cursor.getColumnIndex(FeedEntry._ID));
+                db.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + "=?",  new String[]{rowId});
+            }
+            refreshList();
             return true;
         }
 
