@@ -1,5 +1,7 @@
 package com.yeoman.simplestnote;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -120,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         saveNote(input.getText().toString());
+        updateWidget();
         InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
         super.onPause();
@@ -134,6 +138,33 @@ public class MainActivity extends AppCompatActivity {
         mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
         db.insert(FeedEntry.TABLE_NAME, null, mValues);
         input.setText("");
+    }
+
+    protected void updateWidget(){
+        Context context = this;
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.show_all_note);
+        ComponentName thisWidget = new ComponentName(context, ShowAllNote.class);
+        Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+        String content;
+        // Instruct the widget manager to update the widget
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            content = cursor.getString(1);
+            views.setTextViewText(R.id.textView1, content);
+            cursor.moveToNext();
+            if (!cursor.isAfterLast()) {
+                content = cursor.getString(1);
+                views.setTextViewText(R.id.textView2, content);
+                cursor.moveToNext();
+                if (!cursor.isAfterLast()) {
+                    content = cursor.getString(1);
+                    views.setTextViewText(R.id.textView3, content);
+                }
+            }
+        }
+        cursor.close();
+        appWidgetManager.updateAppWidget(thisWidget, views);
     }
 
     protected void refreshList(){
