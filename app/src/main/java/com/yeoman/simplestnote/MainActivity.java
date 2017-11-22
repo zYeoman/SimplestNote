@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 saveNote(intent.getStringExtra(EXTRA_TEXT)); // Handle text being sent
+                updateWidget();
             }
             finish();
         } else {
