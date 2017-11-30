@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         ComponentName thisWidget = new ComponentName(context, ShowAllNote.class);
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         // Instruct the widget manager to update the widget
-        String content1="",content2="",content3="";
+        String content1="安身立命",content2="云淡风轻",content3="啦啦啦啦";
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
             content1 = cursor.getString(1);

@@ -24,7 +24,7 @@ public class ShowAllNote extends AppWidgetProvider {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         // Instruct the widget manager to update the widget
-        String content1="",content2="",content3="";
+        String content1="安身立命",content2="云淡风轻",content3="啦啦啦啦";
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
             content1 = cursor.getString(1);
@@ -40,7 +40,6 @@ public class ShowAllNote extends AppWidgetProvider {
         views.setTextViewText(R.id.textView1, content1);
         views.setTextViewText(R.id.textView2, content2);
         views.setTextViewText(R.id.textView3, content3);
-        cursor.close();
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
