@@ -12,6 +12,4 @@ The simplest note app on android, with only 3 features: add note, show all notes
     * FloatingMenu
 
 ## TODO
-* Code review
-* Refactor
 * 插入的动画效果
