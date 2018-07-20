@@ -37,6 +37,7 @@ public class ShowAllNote extends AppWidgetProvider {
                 }
             }
         }
+        cursor.close();
         views.setTextViewText(R.id.textView1, content1);
         views.setTextViewText(R.id.textView2, content2);
         views.setTextViewText(R.id.textView3, content3);

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView list;
     private int mPreviousVisibleItem;
     private SharedPreferences mShared;
+    private SimpleCursorAdapter mSimpleCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +73,11 @@ public class MainActivity extends AppCompatActivity {
             }
             finish();
         } else {
+            mSimpleCursorAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, null, new String[]{FeedEntry.CONTENT, FeedEntry.TIME},new int[]{android.R.id.text1,android.R.id.text2}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+            list.setAdapter(mSimpleCursorAdapter);     //给ListView设置适配器
             refreshList();
         }
+
 
         input = (KeyBackEditText) findViewById(R.id.input);
         input.setHorizontallyScrolling(false);
@@ -145,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        if(imm != null) imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
         super.onPause();
     }
 
@@ -193,13 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void refreshList(){
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
-        list.setAdapter(new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_2,
-                cursor,
-                new String[]{FeedEntry.CONTENT, FeedEntry.TIME},
-                new int[]{android.R.id.text1,android.R.id.text2},
-                0));
+        mSimpleCursorAdapter.changeCursor(cursor);
     }
 
     protected void restorableDelete(){
@@ -226,18 +225,21 @@ public class MainActivity extends AppCompatActivity {
 
     protected void shareText(){
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
-        String str = "SimplestNote\n";
+        StringBuilder sBuilder = new StringBuilder("SimplestNote\n");
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
             String content = cursor.getString(1);
             String time = cursor.getString(2);
-            str += content + " at " + time + "\n";
+            sBuilder.append(content);
+            sBuilder.append(" at ");
+            sBuilder.append(time);
+            sBuilder.append("\n");
             cursor.moveToNext();
         }
         cursor.close();
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, str);
+        intent.putExtra(Intent.EXTRA_TEXT, sBuilder.toString());
         intent.setType("text/plain");
         startActivity(intent);
     }
@@ -264,18 +266,21 @@ public class MainActivity extends AppCompatActivity {
         AVOSCloud.initialize(this,"8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz","XBGC5iyLjyNouI1L4skVJB1O");
         AVObject note = new AVObject("Note");
         Cursor cursor = db.rawQuery(FeedEntry.SelectDel, null);
-        String str = "";
+        StringBuilder sBuilder = new StringBuilder("");
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
             String content = cursor.getString(1);
             String time = cursor.getString(2);
-            str += content + " at " + time + "\n";
+            sBuilder.append(content);
+            sBuilder.append(" at ");
+            sBuilder.append(time);
+            sBuilder.append("\n");
             cursor.moveToNext();
         }
         cursor.close();
 
-        if(str.trim().length() <= 0)return;
-        note.put("content", str);
+        if(sBuilder.toString().trim().length() <= 0)return;
+        note.put("content", sBuilder.toString().trim());
         note.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
@@ -309,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(input, InputMethodManager.SHOW_FORCED);
+                    if (imm!=null)imm.showSoftInput(input, InputMethodManager.SHOW_FORCED);
                 }
 
             }, 100);
