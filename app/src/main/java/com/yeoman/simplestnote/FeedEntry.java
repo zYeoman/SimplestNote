@@ -10,7 +10,7 @@ public  class FeedEntry implements BaseColumns {
     public static final int Del = 0;
     public static final int Exist = 1;
     public static final int Store = 2;
-    public static final String toDel = "flag=1";
+    public static final String toDel = "flag="+Del;
     public static final String SelectALL="SELECT  * FROM " + TABLE_NAME +
             " WHERE " + FLAG + ">" + Del +
             " ORDER BY " + _ID + " DESC;";

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
@@ -73,7 +75,22 @@ public class MainActivity extends AppCompatActivity {
             }
             finish();
         } else {
-            mSimpleCursorAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, null, new String[]{FeedEntry.CONTENT, FeedEntry.TIME},new int[]{android.R.id.text1,android.R.id.text2}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+            mSimpleCursorAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2,
+                    null, new String[]{FeedEntry.CONTENT, FeedEntry.TIME},new int[]{android.R.id.text1,android.R.id.text2},
+                    CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER){
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View itemView = super.getView(position, convertView, parent);
+                    Cursor cursor = (Cursor)getItem(position);
+                    TextView mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+                    if (cursor.getString(1).startsWith("!")){
+                        mTextView.setTypeface(null, Typeface.BOLD);
+                    } else {
+                        mTextView.setTypeface(null, Typeface.NORMAL);
+                    }
+                    return itemView;
+                };
+            };
             list.setAdapter(mSimpleCursorAdapter);     //给ListView设置适配器
             refreshList();
         }
