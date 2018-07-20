@@ -1,11 +1,13 @@
 package com.yeoman.simplestnote;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private ListView list;
     private int mPreviousVisibleItem;
+    private SharedPreferences mShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         SimplestNoteDbHelper mDbHelper = new SimplestNoteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
         list = (ListView) findViewById(R.id.list);
+        mShared = getSharedPreferences("lastnote", Activity.MODE_PRIVATE);
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        input.setText(mShared.getString("note", ""));
+        input.setSelection(input.getText().length());
 
         FloatingActionButton delete_fab = (FloatingActionButton) findViewById(R.id.delete_fab);
         FloatingActionButton share_fab = (FloatingActionButton) findViewById(R.id.share_fab);
@@ -122,9 +128,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause(){
-        saveNote(input.getText().toString());
-        updateWidget();
+    public void onStop(){
+        mShared.edit().putString("note", input.getText().toString()).apply();
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
         InputMethodManager imm = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
         super.onPause();
