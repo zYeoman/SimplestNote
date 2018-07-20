@@ -35,6 +35,7 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         input.setText(mShared.getString("note", ""));
         input.setSelection(input.getText().length());
 
-        FloatingActionButton delete_fab = (FloatingActionButton) findViewById(R.id.delete_fab);
+        FloatingActionButton pop_fab = (FloatingActionButton) findViewById(R.id.pop_fab);
         FloatingActionButton share_fab = (FloatingActionButton) findViewById(R.id.share_fab);
         final FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fam);
 
@@ -108,11 +109,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        delete_fab.setOnClickListener(new View.OnClickListener() {
+        pop_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fam.close(true);
-                restorableDelete();
+                Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
+                if(cursor.moveToFirst()) {
+                    String rowId = cursor.getString(cursor.getColumnIndex(FeedEntry._ID));
+                    String content = cursor.getString(1);
+                    input.setText(content);
+                    input.setSelection(content.length());
+                    db.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + "=?",  new String[]{rowId});
+                }
+                cursor.close();
+                refreshList();
             }
         });
 
@@ -121,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 fam.close(true);
                 shareText();
-                restorableDelete();
             }
         });
         sendText();
@@ -141,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void saveNote(String strInput){
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat));
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat), Locale.CHINA);
         if (strInput.equals("")) return;
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.CONTENT, strInput);
@@ -197,32 +206,7 @@ public class MainActivity extends AppCompatActivity {
         undoSnack();
     }
 
-    protected void dialogDelete(){
-        new AlertDialog.Builder(this)
-                .setTitle("Delete all?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        restorableDelete();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                })
-                .setNeutralButton("And share", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        shareText();
-                        restorableDelete();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    protected void undoSnack(){
+        protected void undoSnack(){
         Snackbar.make(list, "All entry deleted!", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
@@ -337,12 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
-            Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
-            if(cursor.moveToFirst()) {
-                String rowId = cursor.getString(cursor.getColumnIndex(FeedEntry._ID));
-                db.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + "=?",  new String[]{rowId});
-            }
-            refreshList();
+            restorableDelete();
             return true;
         }
 

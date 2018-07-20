@@ -9,11 +9,12 @@ public  class FeedEntry implements BaseColumns {
     public static final String FLAG="flag";
     public static final int Exist = 0;
     public static final int Del = 1;
+    public static final int Store = 2;
     public static final String toDel = "flag=1";
     public static final String SelectALL="SELECT  * FROM " + TABLE_NAME +
-            " WHERE " + FLAG + " =0" +
+            " WHERE " + FLAG + "=" + Exist +
             " ORDER BY " + _ID + " DESC;";
     public static final String SelectDel="SELECT  * FROM " + TABLE_NAME +
-            " WHERE " + FLAG + " =1" +
+            " WHERE " + FLAG + "=" + Del +
             " ORDER BY " + _ID + " DESC;";
 }

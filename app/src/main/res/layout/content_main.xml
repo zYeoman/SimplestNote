@@ -69,14 +69,14 @@
                 fab:fab_colorPressed="@android:color/darker_gray"/>
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/delete_fab"
+                android:id="@+id/pop_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_delete"
-                fab:fab_size="mini"
-                fab:fab_label="Delete"
+                android:src="@android:drawable/ic_menu_upload"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="@android:color/darker_gray"/>
+                fab:fab_colorPressed="@android:color/darker_gray"
+                fab:fab_label="Pop"
+                fab:fab_size="mini" />
 
         </com.github.clans.fab.FloatingActionMenu>
 
