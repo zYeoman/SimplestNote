@@ -151,13 +151,17 @@ public class MainActivity extends AppCompatActivity {
 
     protected void saveNote(String strInput){
         SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat), Locale.CHINA);
-        if (strInput.equals("")) return;
+        if (strInput.trim().equals("")) return;
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.CONTENT, strInput);
         mValues.put(FeedEntry.TIME, dateFormatter.format(new Date()));
-        mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
+        if (strInput.startsWith("!"))
+            mValues.put(FeedEntry.FLAG, FeedEntry.Store);
+        else
+            mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
         db.insert(FeedEntry.TABLE_NAME, null, mValues);
         input.setText("");
+        mShared.edit().putString("note", "").apply();
     }
 
     protected void updateWidget(){
@@ -201,19 +205,19 @@ public class MainActivity extends AppCompatActivity {
     protected void restorableDelete(){
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.FLAG, FeedEntry.Del);
-        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
+        db.update(FeedEntry.TABLE_NAME,mValues,FeedEntry.FLAG+"="+FeedEntry.Exist,null);
         refreshList();
         undoSnack();
     }
 
-        protected void undoSnack(){
+    protected void undoSnack(){
         Snackbar.make(list, "All entry deleted!", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ContentValues mValues = new ContentValues();
                         mValues.put(FeedEntry.FLAG, FeedEntry.Exist);
-                        db.update(FeedEntry.TABLE_NAME,mValues,null,null);
+                        db.update(FeedEntry.TABLE_NAME,mValues,FeedEntry.FLAG+"="+FeedEntry.Del,null);
                         refreshList();
                     }
                 })
