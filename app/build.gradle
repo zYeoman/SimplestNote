@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.yeoman.simplestnote"
         minSdkVersion 22
@@ -13,23 +13,23 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // LeanCloud 基础包
-    compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
-    compile 'com.github.clans:fab:1.6.4'
-    compile 'com.optimus:editTextField:0.2.0'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
+    implementation 'cn.leancloud.android:avoscloud-sdk:v4.6.4'
+    implementation 'com.github.clans:fab:1.6.4'
+    api 'com.optimus:editTextField:0.2.0'
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:design:25.4.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
 }
