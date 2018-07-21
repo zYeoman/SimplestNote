@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    protected void saveNote(String strInput){
+    private void saveNote(String strInput){
         SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateFormat), Locale.CHINA);
         if (strInput.trim().equals("")) return;
         ContentValues mValues = new ContentValues();
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         mShared.edit().putString("note", "").apply();
     }
 
-    protected void updateWidget(){
+    private void updateWidget(){
         Context context = this;
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.show_all_note);
@@ -213,12 +213,13 @@ public class MainActivity extends AppCompatActivity {
         appWidgetManager.updateAppWidget(thisWidget, views);
     }
 
-    protected void refreshList(){
+    private void refreshList(){
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         mSimpleCursorAdapter.changeCursor(cursor);
+        updateWidget();
     }
 
-    protected void restorableDelete(){
+    private void restorableDelete(){
         ContentValues mValues = new ContentValues();
         mValues.put(FeedEntry.FLAG, FeedEntry.Del);
         db.update(FeedEntry.TABLE_NAME,mValues,FeedEntry.FLAG+"="+FeedEntry.Exist,null);
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         undoSnack();
     }
 
-    protected void undoSnack(){
+    private void undoSnack(){
         Snackbar.make(list, "All entry deleted!", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
@@ -240,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    protected void shareText(){
+    private void shareText(){
         Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
         StringBuilder sBuilder = new StringBuilder("SimplestNote\n");
         cursor.moveToFirst();
@@ -261,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void deleteAsk(){
+    private void deleteAsk(){
         new AlertDialog.Builder(this)
                 .setTitle("Save failure, delete anyway?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    protected void sendText(){
+    private void sendText(){
         AVOSCloud.initialize(this,"8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz","XBGC5iyLjyNouI1L4skVJB1O");
         AVObject note = new AVObject("Note");
         Cursor cursor = db.rawQuery(FeedEntry.SelectDel, null);

@@ -2,7 +2,7 @@ package com.yeoman.simplestnote;
 
 import android.provider.BaseColumns;
 
-public  class FeedEntry implements BaseColumns {
+class FeedEntry implements BaseColumns {
     public static final String TABLE_NAME = "notes";
     public static final String CONTENT = "content";
     public static final String TIME = "time";
