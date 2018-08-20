@@ -47,36 +47,19 @@
                 android:scrollbars="none"/>
         </LinearLayout>
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/fam"
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/pop_fab"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
+            android:layout_margin="10dp"
+            android:src="@android:drawable/ic_menu_upload"
+            fab:fab_colorNormal="@android:color/white"
+            fab:fab_colorPressed="@android:color/darker_gray"
+            fab:fab_label="Pop"
             >
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/share_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_send"
-                android:tint="@color/colorPrimary"
-                fab:fab_size="mini"
-                fab:fab_label="Share"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="@android:color/darker_gray"/>
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/pop_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_upload"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="@android:color/darker_gray"
-                fab:fab_label="Pop"
-                fab:fab_size="mini" />
-
-        </com.github.clans.fab.FloatingActionMenu>
+        </com.github.clans.fab.FloatingActionButton>
 
     </FrameLayout>
 

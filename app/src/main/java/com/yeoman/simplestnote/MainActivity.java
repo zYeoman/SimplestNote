@@ -33,8 +33,8 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
+
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
         input.setText(mShared.getString("note", ""));
         input.setSelection(input.getText().length());
 
-        FloatingActionButton pop_fab = (FloatingActionButton) findViewById(R.id.pop_fab);
-        FloatingActionButton share_fab = (FloatingActionButton) findViewById(R.id.share_fab);
-        final FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fam);
+        final FloatingActionButton pop_fab = (FloatingActionButton) findViewById(R.id.pop_fab);
 
         list.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -123,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem > mPreviousVisibleItem) {
-                    fam.hideMenuButton(true);
+                    pop_fab.hide(true);
                 } else if (firstVisibleItem < mPreviousVisibleItem) {
-                    fam.showMenuButton(true);
+                    pop_fab.show(true);
                 }
                 mPreviousVisibleItem = firstVisibleItem;
             }
@@ -134,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         pop_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fam.close(true);
                 Cursor cursor = db.rawQuery(FeedEntry.SelectALL, null);
                 if(cursor.moveToFirst()) {
                     String rowId = cursor.getString(cursor.getColumnIndex(FeedEntry._ID));
@@ -148,13 +145,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        share_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fam.close(true);
-                shareText();
-            }
-        });
         sendText();
     }
 
@@ -349,6 +339,9 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
             restorableDelete();
+            return true;
+        } else if(id == R.id.share){
+            shareText();
             return true;
         }
 

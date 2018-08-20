@@ -3,4 +3,5 @@
     <string name="dateFormat">MM-dd HH:mm:ss</string>
     <string name="input">Input</string>
     <string name="delete_all">delete all</string>
+    <string name="share">share</string>
 </resources>
