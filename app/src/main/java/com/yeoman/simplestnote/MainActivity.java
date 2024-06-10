@@ -29,11 +29,6 @@ import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVOSCloud;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.SaveCallback;
-
 import com.github.clans.fab.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
@@ -271,8 +266,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendText(){
-        AVOSCloud.initialize(this,"8hgOr9Fackt9Y2TrVD8KAvnr-gzGzoHsz","XBGC5iyLjyNouI1L4skVJB1O");
-        AVObject note = new AVObject("Note");
         Cursor cursor = db.rawQuery(FeedEntry.SelectDel, null);
         StringBuilder sBuilder = new StringBuilder("");
         cursor.moveToFirst();
@@ -288,21 +281,6 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
 
         if(sBuilder.toString().trim().length() <= 0)return;
-        note.put("content", sBuilder.toString().trim());
-        note.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    // 保存成功
-                    // 删除原来数据
-                    db.delete(FeedEntry.TABLE_NAME,FeedEntry.toDel,null);
-                }
-                else {
-                    // 保存失败
-                    deleteAsk();
-                }
-            }
-        });
     }
 
     @Override

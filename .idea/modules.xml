@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SimplestNote.iml" filepath="$PROJECT_DIR$/SimplestNote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SimplestNote-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SimplestNote-app.iml" group="SimplestNote/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StudioProjects-SimplestNote.iml" filepath="$PROJECT_DIR$/.idea/modules/StudioProjects-SimplestNote.iml" group="SimplestNote" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
