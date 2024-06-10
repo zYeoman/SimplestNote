@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus) {
+            input.requestFocus();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
 
